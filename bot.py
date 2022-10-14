@@ -36,14 +36,6 @@ async def bot_commands_handler():
     await send_message()
 
 
-async def find_birth_dates():
-    return {
-        0: bot._google_table.search_names(), 
-        1: bot._google_table.search_names(time_delta=1), 
-        7: bot._google_table.search_names(time_delta=7),
-    } 
-
-
 async def create_answer(birth_dates) -> str:
     answers = []
     for value in birth_dates.values():
@@ -52,6 +44,14 @@ async def create_answer(birth_dates) -> str:
         names = ' ✨\n✨ '.join(list(value.values())[0])
         answers.append(f'❗️ {list(value.keys())[0]} - 🥳 день рождения 🥳 этих ребят:\n\n✨ {names} ✨')
     return '\n\n'.join(answers)
+    
+
+async def find_birth_dates():
+    return {
+        0: bot._google_table.search_names(), 
+        1: bot._google_table.search_names(time_delta=1), 
+        7: bot._google_table.search_names(time_delta=7),
+    } 
 
 
 async def send_message():
