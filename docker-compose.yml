@@ -1,0 +1,8 @@
+version: "3.7"
+
+services:
+  bot:
+    container_name: birthdatebot_container
+    build: .
+    command: python bot.py
+    env_file: ./.env
