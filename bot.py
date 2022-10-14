@@ -2,19 +2,18 @@ import config
 import asyncio
 import aioschedule
 
-from aiogram import Bot, types
-from aiogram.dispatcher import Dispatcher, filters
-from aiogram.utils import executor
 from loguru import logger
+from aiogram import Bot, types
+from aiogram.utils import executor
 from googlesheet_table import GoogleTable
+from aiogram.utils.exceptions import ChatNotFound
+from aiogram.dispatcher import Dispatcher, filters
 
 
 logger.add(
     config.settings['LOG_FILE'],
     format='{time} {level} {message}',
     level='DEBUG',
-    rotation='1 week',
-    compression='zip',
 )
 
 
@@ -46,7 +45,7 @@ async def create_answer(birth_dates) -> str:
     return '\n\n'.join(answers)
     
 
-async def find_birth_dates():
+async def find_birth_dates() -> dict:
     return {
         0: bot._google_table.search_names(), 
         1: bot._google_table.search_names(time_delta=1), 
@@ -61,14 +60,16 @@ async def send_message():
         return
     try:
         await bot.send_message(config.settings['USER_ID'], answer)
-    except Exception as send_error:
-        logger.debug(f'{send_error.message}: sending error')
+    except ChatNotFound as error:
+        logger.info(f'{error}: sending error')
+        return
+    except Exception as error:
+        logger.warning(error)
         return
 
 
 async def scheduler():
-    # aioschedule.every().day.at('09:00').do(send_message)
-    aioschedule.every(10).seconds.do(send_message)
+    aioschedule.every().day.at('09:00').do(send_message)
     while True:
         await aioschedule.run_pending()
         await asyncio.sleep(1)
