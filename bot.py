@@ -31,7 +31,7 @@ dispatcher = Dispatcher(bot)
 
 
 @dispatcher.message_handler(filters.Regexp(regexp=r"(((S|s)tart))"))
-async def bot_commands_handler():
+async def bot_commands_handler(message: types.Message):
     await send_message()
 
 
