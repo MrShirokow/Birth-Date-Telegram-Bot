@@ -1,5 +1,6 @@
 import pygsheets
 import datetime
+import config
 
 from pygsheets.client import Client
 
@@ -16,10 +17,9 @@ class GoogleTable:
     def _get_googlesheet_client(self) -> Client:
         return pygsheets.authorize(service_file=self.credence_service_file)
 
-    def search_names(self, time_delta: int = 0, date_column: int = 3, name_column: int = 2) -> list | int:
-        names = []
+    def search_names(self, time_delta: int = 0, name_column: int = 1, date_column: int = 2) -> dict | int:
         search_date = (datetime.date.today() + datetime.timedelta(days=time_delta)).strftime('%d.%m')
-        print(search_date)
+        names = {search_date: []}
         googlesheet_client: Client = self._get_googlesheet_client()
         worksheet: pygsheets.Spreadsheet = self._get_googlesheet_by_url(googlesheet_client)
         try:
@@ -28,12 +28,6 @@ class GoogleTable:
             return -1
         for cell in found_cells:
             row = cell.row
-            date = worksheet.get_value((row, date_column))
             name = worksheet.get_value((row, name_column))
-            names.append((date, name))
+            names[search_date].append(name)
         return names
-
-
-# google_table = GoogleTable('creds.json', 'https://docs.google.com/spreadsheets/d/1Ob4hFh8wIjBHmE2z_ZF7MZg_k0KzBXFdHPfVF_vVHSA')
-# result = google_table.search_names(10)
-# print(result)
