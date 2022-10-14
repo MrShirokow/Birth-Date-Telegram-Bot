@@ -3,11 +3,11 @@ import asyncio
 import aioschedule
 
 from loguru import logger
+from googlesheet_table import GoogleTable
 from aiogram import Bot, types
 from aiogram.utils import executor
-from googlesheet_table import GoogleTable
+from aiogram.dispatcher import Dispatcher
 from aiogram.utils.exceptions import ChatNotFound
-from aiogram.dispatcher import Dispatcher, filters
 
 
 logger.add(
@@ -22,17 +22,22 @@ class BirthDateTelegramBot(Bot):
         super().__init__(token, parse_mode=parse_mode)
         self._google_table: GoogleTable = google_table
 
+
 bot = BirthDateTelegramBot(
     token=config.settings['TOKEN'],
     parse_mode=types.ParseMode.HTML,
     google_table=GoogleTable('creds.json', config.settings['GOOGLESHEET_URL']),
 )
 dispatcher = Dispatcher(bot)
+SERJ_ID = config.settings['USER_ID']
 
 
-@dispatcher.message_handler(filters.Regexp(regexp=r"(((S|s)tart))"))
-async def bot_commands_handler(message: types.Message):
-    await send_message()
+@dispatcher.message_handler(content_types=['sticker'])
+async def cat_sticker_handler(message: types.Message):
+    await bot.send_sticker(
+        message.from_user.id, 
+        sticker='CAACAgIAAxkBAAIBBWNJstZXmnX9_z310cvPE0RbloHAAAKvFgACFXAhSGhYH3WyKi5kKgQ'
+    )
 
 
 async def create_answer(birth_dates) -> str:
@@ -59,7 +64,7 @@ async def send_message():
     if not answer:
         return
     try:
-        await bot.send_message(config.settings['USER_ID'], answer)
+        await bot.send_message(SERJ_ID, answer)
     except ChatNotFound as error:
         logger.info(f'{error}: sending error')
         return

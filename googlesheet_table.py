@@ -26,9 +26,8 @@ class GoogleTable:
             found_cells = worksheet.find(search_date, matchEntireCell=True, cols=(date_column, date_column))
         except:
             return None
-        else:
-            if not found_cells:
-                return None
+        if not found_cells:
+            return None
         for cell in found_cells:
             row = cell.row
             name = worksheet.get_value((row, name_column))
