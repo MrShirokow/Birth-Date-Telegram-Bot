@@ -40,7 +40,7 @@ async def cat_sticker_handler(message: types.Message):
     )
 
 
-async def create_answer(birth_dates) -> str:
+async def create_answer(birth_dates: dict) -> str:
     answers = []
     for value in birth_dates.values():
         if not value:
