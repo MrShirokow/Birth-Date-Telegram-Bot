@@ -1,2 +1,5 @@
-# @gvadellupa_birthdate_bot
-### `@gvadellupa_birthdate_bot` - телеграм бот для предварительного напоминания о днях рождения. По каждой дате происходит 3 напоминания: за 7 дней, за 1 день и непосредственно в день рождения. Алгоритм поиска подходящих дат запускается каждый день в 9 утра (по Екатеринбургу). База дней рождения хранится в Google таблице. 
+## Birth Date Telegram Bot
+
+This app is just an opportunity to understand how to make telegram bots using python.
+
+The idea of the bot is a reminder of birthdays that are listed in the google spreadsheet. It's based on a periodic task that checks at a certain interval, and if it finds suitable dates, it sends a message to telegram.
